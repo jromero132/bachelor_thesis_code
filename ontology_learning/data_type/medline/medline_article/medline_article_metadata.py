@@ -23,7 +23,7 @@ class MedlineArticleMetadata:
 		id: str = None,
 		date_created: str = None,
 		also_called: list = None,
-	):
+	) -> None:
 		self.url = url
 		self.language = language
 		self.title = title
