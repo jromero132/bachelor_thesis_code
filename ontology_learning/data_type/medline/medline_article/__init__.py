@@ -1,0 +1,1 @@
+from ontology_learning.data_type.medline.medline_article.medline_article import MedlineArticle
