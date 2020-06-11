@@ -20,13 +20,29 @@ class MedlineCorpus:
 
 	# magic methods
 	def __len__(self) -> int:
-		"""
+		"""Get the amount of articles in the corpus
+
+		Returns:
+			int: length of the corpus
 		"""
 		return len(self._articles)
 
 	def __iter__(self) -> Generator:
+		"""Generator with all articles in the corpus
+
+		Returns:
+			Generator: all articles in the corpus as a sequence
+		"""
 		return (article for article in self._articles)
 
 	# instance methods
 	def add_health_topic(medline_article: MedlineArticle) -> None:
+		"""Add a health topic to the corpus
+
+		Args:
+			medline_article (MedlineArticle): health topic to be added
+
+		Returns:
+			None
+		"""
 		self._articles.append(medline_article)
