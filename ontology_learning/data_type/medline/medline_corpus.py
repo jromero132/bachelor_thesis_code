@@ -4,6 +4,7 @@ from typing import Generator
 # own modules
 from ontology_learning.data_type.medline.medline_article import MedlineArticle
 
+
 class MedlineCorpus:
 	"""Represents a corpus using medline articles as documents
 

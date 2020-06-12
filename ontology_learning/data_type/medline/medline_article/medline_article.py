@@ -1,3 +1,4 @@
+# own modules
 from ontology_learning.data_type.medline.medline_article.medline_article_metadata import MedlineArticleMetadata
 
 
