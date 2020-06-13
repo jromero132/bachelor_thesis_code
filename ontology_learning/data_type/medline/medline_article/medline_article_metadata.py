@@ -25,7 +25,7 @@ class MedlineArticleMetadata:
 		also_called: list = None,
 	) -> None:
 		self.url = url
-		self.language = language
+		self.language = language.lower() if language is not None else None
 		self.title = title
 		self.description = description
 		self.id = id
