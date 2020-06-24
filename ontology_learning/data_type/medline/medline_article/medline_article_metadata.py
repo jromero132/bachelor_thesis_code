@@ -1,3 +1,6 @@
+from ontology_learning.utils.slugify import slugify
+
+
 class MedlineArticleMetadata:
 	"""Metadata of medline articles used in MedlineArticle class.
 
@@ -27,6 +30,7 @@ class MedlineArticleMetadata:
 		self.url = url
 		self.language = language.lower() if language is not None else None
 		self.title = title
+		self.title_slug = slugify(self.title or "")
 		self.description = description
 		self.id = id
 		self.date_created = date_created
