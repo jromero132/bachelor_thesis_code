@@ -4,5 +4,7 @@
 # pycache
 __pycache__
 
-# medline articles
+# medline data
 articles
+data
+health-topics
