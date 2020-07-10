@@ -9,13 +9,14 @@ def save_medline_article(
 	medline_article: MedlineArticle,
 	folder_path: Path,
 	*,
-	filename: str = None
+	filename: str = None,
+	split_by_sentences = True
 ) -> None:
 	absolute_folder_path: Path = Path(folder_path.absolute())
-	absolute_file_path = absolute_folder_path / (filename or f"{medline_article.meta.title_slug}.ma")
+	absolute_file_path = absolute_folder_path / (filename or f"{medline_article.meta.title_slug}.txt")
 
 	if not absolute_folder_path.exists():
 		absolute_folder_path.mkdir()
 
 	with open(absolute_file_path, "w+", encoding = "utf8") as f:
-		f.write(medline_article.text)
+		f.write("\n".join(medline_article.sentences) if split_by_sentences else medline_article.text)
