@@ -3,6 +3,7 @@
 
 # pycache
 __pycache__
+*.pyc
 
 # medline data
 articles
