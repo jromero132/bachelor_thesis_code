@@ -1,5 +1,6 @@
 # own modules
 from ontology_learning.data_type.medline.medline_article.medline_article_metadata import MedlineArticleMetadata
+from ontology_learning.utils.sentence_tokenize import sentence_tokenize
 
 
 class MedlineArticle:
@@ -19,4 +20,10 @@ class MedlineArticle:
 		meta: MedlineArticleMetadata = None
 	) -> None:
 		self.text = text
+		self._sentences = sentence_tokenize(text)
 		self.meta = meta
+
+	@property
+	def sentences(self):
+		for sentence in self._sentences:
+			yield sentence
