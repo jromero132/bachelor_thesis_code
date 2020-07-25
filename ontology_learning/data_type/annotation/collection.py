@@ -11,9 +11,11 @@ from .attribute import Attribute
 from .keyphrase import Keyphrase
 from .relation import Relation
 from .sentence import Sentence
-# from bisect import bisect
+from bisect import bisect_left
 from itertools import accumulate, chain
 from pathlib import Path
+
+import re
 
 
 class Collection:
@@ -40,20 +42,22 @@ class Collection:
 		if not isinstance(extension, (tuple, list)):
 			extension = (extension,)
 
-		return sum(
-			(
-				Collection.load_document(
+		result = Collection()
+		offset = [ 0 ] * 3
+		for f in cpath.iterdir():
+			if f.suffix in extension:
+				collection = Collection.load_document(
 					f,
 					legacy = legacy,
 					keyphrases = keyphrases,
 					relations = relations,
 					attributes = attributes,
 				)
-				for f in cpath.iterdir()
-				if f.suffix in extension
-			),
-			Collection()
-		)
+				collection.fix_ids()
+				new_offset = Collection.increase_ids(collection, *offset)
+				offset = [ a + b for a, b in zip(offset, new_offset) ]
+				result += collection
+		return result
 
 	@staticmethod
 	def load_document(
@@ -62,7 +66,8 @@ class Collection:
 		legacy: bool = True,
 		keyphrases: bool = True,
 		relations: bool = True,
-		attributes: bool = True
+		attributes: bool = True,
+		sort = False
 	) -> "Collection":
 
 		# add sentences from input .txt to Collection
@@ -119,12 +124,39 @@ class Collection:
 				attribute: "Attribute" = Attribute(ann.id, keyphrase, ann.type)
 				keyphrase.attributes.append(attribute)
 
-		collection.sort()
+		if sort:
+			collection.sort()
+
 		return collection
+
+	@staticmethod
+	def increase_ids(collection, keyphrases_cnt, relations_cnt, attributes_cnt):
+		def update_id(obj, *fields):
+			for name, value in fields:
+				v = getattr(obj, name)
+				if re.fullmatch(r"\w\d+", v) is not None:
+					_id = int(v[ 1: ])
+					setattr(obj, name, f"{v[ 0 ]}{_id + value}")
+
+		keyphrases, relations, attributes = 0, 0, 0
+		for sentence in collection.sentences:
+			for keyphrase in sentence.keyphrases:
+				for attribute in keyphrase.attributes:
+					update_id(attribute, ("id", attributes_cnt))
+					attributes += 1
+
+				update_id(keyphrase, ("id", keyphrases_cnt))
+				keyphrases += 1
+
+			for relation in sentence.relations:
+				update_id(relation, ("id", relations), ("origin", keyphrases_cnt), ("destination", keyphrases_cnt))
+				relations += 1
+		return keyphrases, relations, attributes
 
 	def sort(self):
 		for sentence in self.sentences:
 			sentence.sort()
+		self.sentences.sort(key = lambda s: s.text)
 
 	@property
 	def sentences_boundaries(self) -> "List[int]":
@@ -133,41 +165,49 @@ class Collection:
 			self.__setattr__(_property_name, list(accumulate(chain([ 0 ], [ len(s) for s in self.sentences ]), lambda l1, l2: l1 + l2 + 1)))
 		return self.__getattribute__(_property_name)
 
-	# def as_ann(self) -> str:
-	# 	ann = "\n\n".join(
-	# 		sentence.as_ann(i + 1, self.sentences_boundaries[ i ])
-	# 		for i, sentence in enumerate(self.sentences)
-	# 	)
-	# 	return ann
+	def get_sentence_annotation(self, sentence: str) -> Sentence: #? better to do it with a trie
+		index = bisect_left(self.sentences, sentence)
+		if index < len(self.sentences) and self.sentences[ index ].text == sentence:
+			return self.sentences[ index ]
 
-	# def fix_ids(self):
-	# 	keyphrases_dict: "Dict{str:str}" = dict()
-	# 	attributes_count: int = 0
-	# 	relations_count: int = 0
+		else:
+			return Sentence(sentence)
 
-	# 	for sentence in self.sentences:
-	# 		for keyphrase in sentence.keyphrases:
-	# 			_id: str = keyphrase.id
+	def as_ann(self) -> str:
+		ann = "\n\n".join(
+			sentence.as_ann(i + 1, self.sentences_boundaries[ i ])
+			for i, sentence in enumerate(self.sentences)
+		)
+		return ann
 
-	# 			if _id in keyphrases_dict:
-	# 				keyphrase.id = keyphrases_dict[ _id ]
+	def fix_ids(self):
+		keyphrases_dict: "Dict{str:str}" = dict()
+		attributes_count: int = 0
+		relations_count: int = 0
 
-	# 			else:
-	# 				keyphrases_dict[ _id ] = keyphrase.id = f'T{len(keyphrases_dict) + 1}'
+		for sentence in self.sentences:
+			for keyphrase in sentence.keyphrases:
+				_id: str = keyphrase.id
 
-	# 			for attribute in keyphrase.attributes:
-	# 				attributes_count += 1
-	# 				attribute.id = f'A{attributes_count}'
+				if _id in keyphrases_dict:
+					keyphrase.id = keyphrases_dict[ _id ]
 
-	# 		for relation in sentence.relations:
-	# 			relation.origin = keyphrases_dict[ relation.origin ]
-	# 			relation.destination = keyphrases_dict[ relation.destination ]
+				else:
+					keyphrases_dict[ _id ] = keyphrase.id = f'T{len(keyphrases_dict) + 1}'
 
-	# 		sentence.sort()
+				for attribute in keyphrase.attributes:
+					attributes_count += 1
+					attribute.id = f'A{attributes_count}'
 
-	# 		for relation in sentence.relations:
-	# 			if relation.is_same_as_relation:
-	# 				continue
+			for relation in sentence.relations:
+				relation.origin = keyphrases_dict[ relation.origin ]
+				relation.destination = keyphrases_dict[ relation.destination ]
 
-	# 			relations_count += 1
-	# 			relation.id = f"R{relations_count}"
+			sentence.sort()
+
+			for relation in sentence.relations:
+				if relation.is_same_as_relation:
+					continue
+
+				relations_count += 1
+				relation.id = f"R{relations_count}"
