@@ -1,4 +1,4 @@
-# from .annotations.comment_annotation import CommentAnnotation
+from .annotation_types.comment_annotation import CommentAnnotation
 from pathlib import Path
 
 class Sentence:
@@ -19,6 +19,9 @@ class Sentence:
 
 	def __str__(self) -> str:
 		return self.__repr__()
+
+	def __lt__(self, text):
+		return self.text < text
 
 	@staticmethod
 	def load_document(dpath: Path) -> list:
@@ -44,22 +47,22 @@ class Sentence:
 	# def relations_len(self) -> int:
 	# 	return len(self.relations)
 
-	# def as_ann(self, sentence_id: int, keyphrase_span_shift: int) -> str:
-	# 	if not hasattr(self, '_as_ann'):
-	# 		self._as_ann: str = CommentAnnotation(f'Sentence {sentence_id}: {self.text}').as_ann()
+	def as_ann(self, sentence_id: int, keyphrase_span_shift: int) -> str:
+		if not hasattr(self, '_as_ann'):
+			self._as_ann: str = CommentAnnotation(f'Sentence {sentence_id}: {self.text}').as_ann()
 
-	# 		if self.keyphrases:
-	# 			self._as_ann += '\n' + CommentAnnotation('Keyphrases').as_ann() + '\n'
-	# 			self._as_ann += '\n'.join(keyphrase.as_ann(keyphrase_span_shift) for keyphrase in self.keyphrases)
+			if self.keyphrases:
+				self._as_ann += '\n' + CommentAnnotation('Keyphrases').as_ann() + '\n'
+				self._as_ann += '\n'.join(keyphrase.as_ann(keyphrase_span_shift) for keyphrase in self.keyphrases)
 
-	# 		if self.relations:
-	# 			self._as_ann += '\n' + CommentAnnotation('Relations').as_ann() + '\n'
-	# 			self._as_ann += '\n'.join(relation.as_ann() for i, relation in enumerate(self.relations))
+			if self.relations:
+				self._as_ann += '\n' + CommentAnnotation('Relations').as_ann() + '\n'
+				self._as_ann += '\n'.join(relation.as_ann() for i, relation in enumerate(self.relations))
 
-	# 		if any(keyphrase.attributes for keyphrase in self.keyphrases):
-	# 			self._as_ann += '\n' + CommentAnnotation('Attributes').as_ann()
-	# 			for keyphrase in self.keyphrases:
-	# 				for attribute in keyphrase.attributes:
-	# 					self._as_ann += '\n' + attribute.as_ann()
+			if any(keyphrase.attributes for keyphrase in self.keyphrases):
+				self._as_ann += '\n' + CommentAnnotation('Attributes').as_ann()
+				for keyphrase in self.keyphrases:
+					for attribute in keyphrase.attributes:
+						self._as_ann += '\n' + attribute.as_ann()
 
-	# 	return self._as_ann
+		return self._as_ann
