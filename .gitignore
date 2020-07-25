@@ -8,4 +8,8 @@ __pycache__
 # medline data
 articles
 data
-health-topics
+medline
+
+# generated knowledge graphs
+knowledge_graph*.gv
+knowledge_graph*.png
