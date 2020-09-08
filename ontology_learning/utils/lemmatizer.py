@@ -2,7 +2,7 @@ import spacy
 
 
 class Lemmatizer:
-	def __init__(self, *, model = "es_core_news_md"):
+	def __init__(self, *, model = "es_core_news_lg"):
 		self.model = model
 		self.nlp = spacy.load(self.model)
 

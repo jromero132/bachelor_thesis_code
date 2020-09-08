@@ -1,0 +1,5 @@
+version: "3"
+services:
+    ontology_learning_bachelor_thesis:
+        build: .
+        image: ontology_learning_bachelor_thesis:1.0
