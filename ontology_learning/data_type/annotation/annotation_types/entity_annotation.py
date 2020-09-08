@@ -15,7 +15,7 @@ class EntityAnnotation(Annotation):
 	@staticmethod
 	def parse(line: str) -> "EntityAnnotation":
 		match = re.fullmatch(r"(?P<id>T\d+)\t(?P<type>\w+) (?P<spans>[\d\s;]+)\t(?P<text>.+)", line)
-		id, typ, text = match.group("id"), match.group("type"), match.group("text")
+		id, typ, text = match.group("id").capitalize(), match.group("type").capitalize(), match.group("text")
 		spans = [ int(span) for span in re.findall(r"\d+", match.group("spans")) ]
 		spans = sorted(zip(spans[ 0::2 ], spans[ 1::2 ]))
 		return EntityAnnotation(id, typ, spans, text)

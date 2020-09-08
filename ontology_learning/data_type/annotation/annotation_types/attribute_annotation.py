@@ -13,7 +13,7 @@ class AttributeAnnotation(Annotation):
 	@staticmethod
 	def parse(line: str) -> "AttributeAnnotation":
 		match = re.fullmatch(r"(?P<id>A\d+)\t(?P<typ>\w+) (?P<ref>\w+)", line)
-		id, typ, ref = match.group("id"), match.group("typ"), match.group("ref")
+		id, typ, ref = match.group("id").capitalize(), match.group("typ").capitalize(), match.group("ref").capitalize()
 		return AttributeAnnotation(id, typ, ref)
 
 	def __repr__(self):

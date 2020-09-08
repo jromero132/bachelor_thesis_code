@@ -9,7 +9,7 @@ class Sentence:
 
 	def sort(self):
 		self.keyphrases.sort(key = lambda k: k.spans)
-		self.relations.sort(key = lambda r: (r.origin, r.destination))
+		self.relations.sort(key = lambda r: (r.id == "*", r.origin, r.destination))
 
 	def __len__(self) -> int:
 		return len(self.text)

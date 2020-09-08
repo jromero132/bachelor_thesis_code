@@ -12,7 +12,7 @@ class CommentAnnotation(Annotation):
 
 	@staticmethod
 	def parse(line: str) -> "CommentAnnotation":
-		match = re.fullmatch(r"(?P<id>#\d*)(?P<comment>.*)", line)
+		match = re.fullmatch(r"(?P<id>#\d*) (?P<comment>.*)", line)
 		id, comment = match.group("id"), match.group("comment").strip()
 		return CommentAnnotation(comment, id = id)
 

@@ -12,7 +12,7 @@ class SameAsAnnotation(Annotation):
 
 	@staticmethod
 	def parse(line: str) -> "SameAsAnnotation":
-		match = re.fullmatch(r"(?P<id>\*\d*)\t(?P<type>[\w\-]+) (?P<args>[\w\s]+)", line)
+		match = re.fullmatch(r"(?P<id>\*)\t(?P<type>[\w\-]+) (?P<args>[\w\s]+)", line)
 		id, typ, args = match.group("id"), match.group("type"), re.split(" ", match.group("args"))
 		return SameAsAnnotation(id, typ, args)
 

@@ -14,7 +14,8 @@ class RelationAnnotation(Annotation):
 	@staticmethod
 	def parse(line: str) -> "RelationAnnotation":
 		match = re.fullmatch(r"(?P<id>R\d+)\t(?P<type>[\w\-]+) Arg1:(?P<arg1>\w+) Arg2:(?P<arg2>\w+)", line)
-		id, typ, arg1, arg2 = match.group("id"), match.group("type"), match.group("arg1"), match.group("arg2")
+		id, typ = match.group("id").capitalize(), match.group("type").lower()
+		arg1, arg2 = match.group("arg1").capitalize(), match.group("arg2").capitalize()
 		return RelationAnnotation(id, typ, arg1, arg2)
 
 	def __repr__(self):

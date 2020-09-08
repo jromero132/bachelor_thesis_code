@@ -32,7 +32,7 @@ def _html_text_sanitizer(html: str) -> str:
     Returns:
         str: html text without tags
     """
-    text: str = re.sub(r"<.+?>", "", html)
+    text: str = re.sub(r"<style[\w\W]+?</style>|<[\w\W]+?>", "", html)
     lines: list = re.split(r"\r+", text)
     sanitized_lines: list = (
         re.sub(r"\s{2,}", " ", line).strip()

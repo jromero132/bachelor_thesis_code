@@ -4,8 +4,6 @@ from ontology_learning.data_type.knowledge_graph.knowledge_graph_node import (
 	KnowledgeGraphCompouseNode
 )
 from graphviz import Digraph
-# import matplotlib.pyplot as plt
-# import networkx as nx
 
 
 class NodeProperties():
@@ -33,55 +31,14 @@ class KnowledgeGraphPainter:
 		node_font_family = "monospace",
 		node_font_size = 9
 	):
-		# cf = plt.gcf() # current frame
-		# if cf._axstack() is None:
-		# 	ax = cf.add_axes((0, 0, 1, 1)) # axis
-
-		# else:
-		# 	ax = cf.gca() # axis
-
-		# ax.set_axis_off()
-		# cf.canvas.set_window_title(title)
-
 		nodes = KnowledgeGraphPainter.get_nodes(knowledge_graph)
 		edges = KnowledgeGraphPainter.get_edges(knowledge_graph)
 
-		# graph = nx.DiGraph()
 		graph = Digraph(
-			name = 'Knowledge Graph',
-			filename = "knowledge_graph.gv",
+			name = "Knowledge Graph",
+			filename = "knowledge_graph",
 			format = "png"
 		)
-		# graph.add_nodes_from(node.id for node in nodes)
-		# graph.add_edges_from(KnowledgeGraphPainter.get_edges(knowledge_graph))
-
-		# pos = nx.spring_layout(graph) # pos
-		# nx.draw(graph, with_labels = True)
-		# nx.draw_networkx_nodes(
-		# 	graph,
-		# 	pos = pos,
-		# 	ax = ax,
-		# 	node_size = [ node.node_size for node in nodes ],
-		# 	node_color = [ node.color for node in nodes ],
-		# 	node_shape = node_shape
-		# )
-
-		# nx.draw_networkx_labels(
-		# 	graph,
-		# 	pos = pos,
-		# 	ax = ax,
-		# 	labels = { node.id: node.label for node in nodes },
-		# 	font_size = node_font_size,
-		# 	font_color = node_label_font_color,
-		# 	font_family = node_font_family,
-		# 	font_weight = node_label_font_weight
-		# )
-
-		# if zoomed:
-		# 	mng = plt.get_current_fig_manager()
-		# 	mng.window.state("zoomed")
-
-		# plt.show()
 
 		for node in nodes:
 			graph.attr("node", style = "filled", color = "black", fillcolor = node.color)
