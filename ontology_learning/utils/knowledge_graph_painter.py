@@ -26,17 +26,15 @@ class KnowledgeGraphPainter:
 	def paint(
 		knowledge_graph,
 		*,
-		title = "Grafo de Conocimiento",
-		zoomed = True,
-		node_font_family = "monospace",
-		node_font_size = 9
+		name = "Knowledge Graph",
+		filename = "knowledge_graph"
 	):
 		nodes = KnowledgeGraphPainter.get_nodes(knowledge_graph)
 		edges = KnowledgeGraphPainter.get_edges(knowledge_graph)
 
 		graph = Digraph(
-			name = "Knowledge Graph",
-			filename = "knowledge_graph",
+			name = name,
+			filename = filename,
 			format = "png"
 		)
 
@@ -52,7 +50,8 @@ class KnowledgeGraphPainter:
 				label = f" {edge.label} "
 			)
 
-		graph.view()
+		# graph.view()
+		graph.render(filename = filename)
 
 	@staticmethod
 	def get_nodes(knowledge_graph):
