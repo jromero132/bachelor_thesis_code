@@ -9,6 +9,5 @@ __pycache__
 articles
 medline
 
-# generated knowledge graphs
-knowledge_graph*.gv
-knowledge_graph*.png
+# utils scripts
+utils*
